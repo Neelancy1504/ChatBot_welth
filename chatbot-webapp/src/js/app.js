@@ -1,7 +1,9 @@
+import Chatbot from './Chatbot.js';
 document.addEventListener('DOMContentLoaded', function() {
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
     const chatMessages = document.getElementById('chatMessages');
+    const chatbot = new Chatbot();
 
     // Function to add a welcome message when the chat loads
     function addWelcomeMessage() {
@@ -21,11 +23,14 @@ document.addEventListener('DOMContentLoaded', function() {
         messageInput.value = '';
         messageInput.focus();
 
+        const botResponse = await chatbot.generateResponse(message);
+        addMessage(botResponse, 'bot');
+
         // Simulate a bot response after a short delay
-        setTimeout(() => {
-            const botResponse = generateBotResponse(message);
-            addMessage(botResponse, 'bot');
-        }, 1000);
+        // setTimeout(() => {
+        //     const botResponse = generateBotResponse(message);
+        //     addMessage(botResponse, 'bot');
+        // }, 1000);
     }
 
     // Function to add a message to the chat interface
