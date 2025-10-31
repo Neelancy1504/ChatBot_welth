@@ -107,11 +107,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners for sending messages
     sendButton.addEventListener('click', sendMessage);
     
-    messageInput.addEventListener('keypress', function(e) {
+    // messageInput.addEventListener('keypress', function(e) {
+    //     if (e.key === 'Enter') {
+    //         sendMessage();
+    //     }
+    // });
+
+    // update to 'keydown' to capture all key presses
+    messageInput.addEventListener('keydown', async function(e) {
         if (e.key === 'Enter') {
-            sendMessage();
+            e.preventDefault(); // prevent form submission / default behavior
+            await sendMessage();
         }
     });
+
 
     // Add the initial welcome message and focus on the input
     addWelcomeMessage();
