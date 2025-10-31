@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Send message function
-    function sendMessage() {
+    async function sendMessage() {
         const message = messageInput.value.trim();
         if (message === '') return;
 
