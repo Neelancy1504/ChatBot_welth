@@ -20,7 +20,7 @@ class Chatbot {
     // }
     async generateResponse(userMessage) {
         try {
-            const response = await fetch(`${API_BASE_URL}/retrieve`, {
+            const response = await fetch(API_BASE_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: userMessage })
