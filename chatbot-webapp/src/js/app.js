@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to add a welcome message when the chat loads
     function addWelcomeMessage() {
-        const welcomeText = "Hello! I'm an AI assistant. Ask me about NotebookLM.";
+        const welcomeText = "Hello! I'm an AI assistant. Ask me about your finances.";
         addMessage(welcomeText, 'bot');
     }
 
