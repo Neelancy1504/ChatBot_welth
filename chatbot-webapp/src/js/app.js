@@ -1,4 +1,4 @@
-import Chatbot from './Chatbot.js';
+import Chatbot from './chatbot.js';
 document.addEventListener('DOMContentLoaded', function() {
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
