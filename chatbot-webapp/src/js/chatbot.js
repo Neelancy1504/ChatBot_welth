@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "./config.js";
 class Chatbot {
     constructor() {
         this.messages = [];
@@ -13,11 +14,29 @@ class Chatbot {
         // Here you would typically trigger a UI update to display the new message
     }
 
-    generateResponse(userMessage) {
-        // Simple response logic for demonstration purposes
-        return `You said: ${userMessage}`;
-    }
+    // generateResponse(userMessage) {
+    //     // Simple response logic for demonstration purposes
+    //     return `You said: ${userMessage}`;
+    // }
+    async generateResponse(userMessage) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/retrieve`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: userMessage })
+            });
 
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            return data.answer || "Sorry, I couldn’t generate an answer.";
+        } catch (error) {
+            console.error('Error fetching response:', error);
+            return "Oops, something went wrong while getting the answer.";
+        }
+    }
     getMessages() {
         return this.messages;
     }
