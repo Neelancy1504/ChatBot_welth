@@ -105,8 +105,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event listeners for sending messages
-    sendButton.addEventListener('click', sendMessage);
-    
+    //sendButton.addEventListener('click', sendMessage);
+    sendButton.addEventListener('click', async () => {
+        await sendMessage();
+    });
+
     // messageInput.addEventListener('keypress', function(e) {
     //     if (e.key === 'Enter') {
     //         sendMessage();
