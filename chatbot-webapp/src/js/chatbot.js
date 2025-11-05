@@ -18,12 +18,12 @@ class Chatbot {
     //     // Simple response logic for demonstration purposes
     //     return `You said: ${userMessage}`;
     // }
-    async generateResponse(userMessage) {
+    async generateResponse(userMessage, userid = "2896d2d5-915e-463b-85c5-fe1dcd141486", accountid = "ba67685c-4878-4d5c-bb0f-75bcdb4c763b") {
         try {
             const response = await fetch(API_BASE_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: userMessage })
+                body: JSON.stringify({ query: userMessage, userid: userid, accountid: accountid })
             });
 
             if (!response.ok) {
