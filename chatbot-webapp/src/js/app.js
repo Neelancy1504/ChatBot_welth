@@ -1,13 +1,25 @@
 import Chatbot from './chatbot.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
     const chatMessages = document.getElementById('chatMessages');
-    const chatbot = new Chatbot();
+    
+    // Extract userid and accountid from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const userid = urlParams.get('userid') || "2896d2d5-915e-463b-85c5-fe1dcd141486";
+    const accountid = urlParams.get('accountid') || "ba67685c-4878-4d5c-bb0f-75bcdb4c763b";
+    
+    console.log('Chatbot initialized with:', { userid, accountid });
+    
+    // Initialize chatbot with extracted parameters
+    const chatbot = new Chatbot(userid, accountid);
 
     // Function to add a welcome message when the chat loads
     function addWelcomeMessage() {
-        const welcomeText = "Hello! I'm an AI assistant. Ask me about your finances.";
+        const welcomeText = userid !== "2896d2d5-915e-463b-85c5-fe1dcd141486" 
+            ? "Hello! I'm your personal financial AI assistant. I have access to your financial data and can help you with budgeting, expense tracking, and financial insights. How can I help you today?"
+            : "Hello! I'm a financial AI assistant. Please connect from your Welth dashboard for personalized financial insights.";
         addMessage(welcomeText, 'bot');
     }
 
@@ -23,14 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
         messageInput.value = '';
         messageInput.focus();
 
-        const botResponse = await chatbot.generateResponse(message);
-        addMessage(botResponse, 'bot');
-
-        // Simulate a bot response after a short delay
-        // setTimeout(() => {
-        //     const botResponse = generateBotResponse(message);
-        //     addMessage(botResponse, 'bot');
-        // }, 1000);
+        try {
+            const botResponse = await chatbot.generateResponse(message);
+            addMessage(botResponse, 'bot');
+        } catch (error) {
+            console.error('Error getting bot response:', error);
+            addMessage("Sorry, I'm having trouble responding right now. Please try again.", 'bot');
+        }
     }
 
     // Function to add a message to the chat interface
@@ -57,8 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         chatMessages.appendChild(messageDiv);
-        
-        // Scroll to the bottom to see the latest message
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
@@ -69,61 +78,17 @@ document.addEventListener('DOMContentLoaded', function() {
         return div.innerHTML;
     }
 
-    // Function to generate a response from the bot
-    function generateBotResponse(userMessage) {
-        const responses = {
-            'hello': 'Hello! How can I help you today?',
-            'hi': 'Hi there! What would you like to know?',
-            'how are you': 'I am just a bot, but I am functioning as expected! How can I assist you?',
-            'notebooklm': 'NotebookLM is an experimental product from Google Labs designed to enhance how we interact with notes and documents using AI. It helps users extract, summarize, and work with content more efficiently.',
-            'what is notebooklm': 'NotebookLM is an experimental product from Google Labs designed to enhance how we interact with notes and documents using AI. It helps users extract, summarize, and work with content more efficiently.',
-            'features': 'Key features include AI-powered note analysis, content summarization, document interaction, and intelligent content extraction to make your workflow more efficient.',
-            'help': 'You can ask me questions about NotebookLM, its features, or just say hello!',
-            'bye': 'Goodbye! Feel free to come back if you have more questions.',
-            'thanks': 'You\'re welcome! Let me know if there\'s anything else I can help with.',
-            'thank you': 'You\'re welcome! Let me know if there\'s anything else I can help with.'
-        };
-
-        const lowerMessage = userMessage.toLowerCase();
-        
-        // Check for keyword matches
-        for (const [key, response] of Object.entries(responses)) {
-            if (lowerMessage.includes(key)) {
-                return response;
-            }
-        }
-
-        // Default responses for unmatched queries
-        const defaultResponses = [
-            'That\'s an interesting question! Can you provide more details?',
-            'I\'d be happy to help with that. Could you elaborate?',
-            'I understand you\'re asking about that topic. What specific aspect interests you most?',
-            'I\'m not sure how to answer that. Can you try asking another way?'
-        ];
-
-        return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
-    }
-
     // Event listeners for sending messages
-    //sendButton.addEventListener('click', sendMessage);
     sendButton.addEventListener('click', async () => {
         await sendMessage();
     });
 
-    // messageInput.addEventListener('keypress', function(e) {
-    //     if (e.key === 'Enter') {
-    //         sendMessage();
-    //     }
-    // });
-
-    // update to 'keydown' to capture all key presses
     messageInput.addEventListener('keydown', async function(e) {
         if (e.key === 'Enter') {
-            e.preventDefault(); // prevent form submission / default behavior
+            e.preventDefault();
             await sendMessage();
         }
     });
-
 
     // Add the initial welcome message and focus on the input
     addWelcomeMessage();

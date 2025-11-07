@@ -1,7 +1,10 @@
 import { API_BASE_URL } from "./config.js";
+
 class Chatbot {
-    constructor() {
+    constructor(userid = "2896d2d5-915e-463b-85c5-fe1dcd141486", accountid = "ba67685c-4878-4d5c-bb0f-75bcdb4c763b") {
         this.messages = [];
+        this.userid = userid;
+        this.accountid = accountid;
     }
 
     sendMessage(userMessage) {
@@ -23,7 +26,11 @@ class Chatbot {
             const response = await fetch(API_BASE_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: userMessage, userid: userid, accountid: accountid })
+                body: JSON.stringify({ 
+                    query: userMessage, 
+                    userid: this.userid, 
+                    accountid: this.accountid 
+                })
             });
 
             if (!response.ok) {
@@ -31,12 +38,14 @@ class Chatbot {
             }
 
             const data = await response.json();
-            return data.answer || "Sorry, I couldn’t generate an answer.";
+            return data.answer || "Sorry, I couldn't generate an answer.";
         } catch (error) {
             console.error('Error fetching response:', error);
-            return "Oops, something went wrong while getting the answer.";
+            // Fallback to local responses if API fails
+            return generateBotResponse(userMessage);
         }
     }
+
     getMessages() {
         return this.messages;
     }
@@ -46,29 +55,29 @@ export default Chatbot;
 
 function generateBotResponse(userMessage) {
     const responses = {
-        'hello': 'Hello! How can I help you today?',
-        'hi': 'Hi there! What would you like to know?',
-        'how are you': 'I\'m doing well, thank you for asking! How can I assist you?',
-        'what is notebooklm': 'NotebookLM is an experimental product from Google Labs designed to enhance how we interact with notes and documents using AI. It helps users extract, summarize, and work with content more efficiently.',
-        'features': 'Key features include AI-powered note analysis, content summarization, document interaction, and intelligent content extraction to make your workflow more efficient.',
-        'help': 'I can help you with information about NotebookLM, answer questions, and provide assistance with various topics. What would you like to know?'
+        'hello': 'Hello! How can I help you with your finances today?',
+        'hi': 'Hi there! What would you like to know about your financial data?',
+        'how are you': 'I\'m doing well, thank you for asking! How can I assist you with your finances?',
+        'balance': 'I can help you check your account balance and recent transactions.',
+        'expenses': 'I can analyze your spending patterns and help you track expenses.',
+        'income': 'I can help you review your income sources and trends.',
+        'budget': 'I can assist you with budgeting and financial planning.',
+        'help': 'I can help you with financial analysis, budgeting, expense tracking, and answer questions about your financial data. What would you like to know?'
     };
 
     const lowerMessage = userMessage.toLowerCase();
     
-    // Check for exact matches first
     for (const [key, response] of Object.entries(responses)) {
         if (lowerMessage.includes(key)) {
             return response;
         }
     }
 
-    // Default responses for unmatched queries
     const defaultResponses = [
-        'That\'s an interesting question! Can you provide more details?',
-        'I\'d be happy to help with that. Could you elaborate?',
-        'Let me think about that... Can you be more specific?',
-        'I understand you\'re asking about that topic. What specific aspect interests you most?'
+        'That\'s an interesting financial question! Can you provide more details?',
+        'I\'d be happy to help with your finances. Could you elaborate?',
+        'Let me think about that financial topic... Can you be more specific?',
+        'I understand you\'re asking about your finances. What specific aspect interests you most?'
     ];
 
     return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
