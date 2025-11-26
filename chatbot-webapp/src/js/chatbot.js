@@ -37,7 +37,20 @@ class Chatbot {
                 throw new Error('Network response was not ok');
             }
 
-            const data = await response.json();
+            // Wait up to 10 seconds for the response to parse
+            let data = null;
+            try {
+                data = await Promise.race([
+                    response.json(),
+                    new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error('Response timeout')), 10000)
+                    )
+                ]);
+            } catch (timeoutError) {
+                // If timeout occurs, just continue (data remains null)
+                console.warn('Response parsing timed out after 10 seconds');
+            }
+
             return data.answer || "Sorry, I couldn't generate an answer.";
         } catch (error) {
             console.error('Error fetching response:', error);
