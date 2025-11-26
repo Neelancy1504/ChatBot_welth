@@ -43,12 +43,12 @@ class Chatbot {
                 data = await Promise.race([
                     response.json(),
                     new Promise((_, reject) =>
-                        setTimeout(() => reject(new Error('Response timeout')), 10000)
+                        setTimeout(() => reject(new Error('Response timeout')), 30000)
                     )
                 ]);
             } catch (timeoutError) {
                 // If timeout occurs, just continue (data remains null)
-                console.warn('Response parsing timed out after 10 seconds');
+                console.warn('Response parsing timed out after 30 seconds');
             }
 
             return data.answer || "Sorry, I couldn't generate an answer.";
